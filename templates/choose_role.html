@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Read Gold — Выбор роли</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #0d0d0d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+        }
+
+        .card {
+            background: rgba(30, 25, 20, 0.95);
+            border: 1px solid #b8960c44;
+            border-radius: 16px;
+            padding: 40px;
+            width: 440px;
+            text-align: center;
+        }
+
+        h1 { color: #d4a017; font-size: 1.8rem; margin-bottom: 8px; }
+        p { color: #aaa; margin-bottom: 32px; }
+
+        .roles {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .role-card {
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 28px 24px;
+            width: 180px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.2s;
+        }
+
+        .role-card:hover {
+            border-color: #d4a017;
+            transform: translateY(-4px);
+        }
+
+        .role-card .icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .role-card h2 { font-size: 1.1rem; color: #d4a017; margin-bottom: 8px; }
+        .role-card p { font-size: 0.8rem; color: #888; margin: 0; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Кто ты?</h1>
+        <p>Выбери свою роль на Read Gold</p>
+
+        <div class="roles">
+            <a href="/set-role/reader" class="role-card">
+                <div class="icon">📖</div>
+                <h2>Читатель</h2>
+                <p>Читай книги и открывай новые истории</p>
+            </a>
+            <a href="/set-role/author" class="role-card">
+                <div class="icon">✍️</div>
+                <h2>Автор</h2>
+                <p>Публикуй свои книги и истории</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

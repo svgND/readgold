@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Gold — {{ book.title }}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #0d0d0d;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+        }
+        nav {
+            background: rgba(20, 16, 10, 0.95);
+            border-bottom: 1px solid #b8960c44;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { color: #d4a017; font-size: 1.4rem; font-weight: bold; }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a { color: #aaa; text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: #d4a017; }
+        .logout {
+            background: transparent;
+            border: 1px solid #d4a017;
+            color: #d4a017;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+        .logout:hover { background: #d4a017; color: #000; }
+
+        .page { display: flex; max-width: 1200px; margin: 0 auto; padding: 40px 24px; gap: 32px; }
+
+        /* Боковая панель с главами */
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+        }
+        .sidebar-card {
+            background: rgba(30, 25, 20, 0.95);
+            border: 1px solid #b8960c44;
+            border-radius: 12px;
+            padding: 20px;
+            position: sticky;
+            top: 20px;
+        }
+        .sidebar-card h3 { color: #d4a017; font-size: 0.9rem; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+        .chapter-list { list-style: none; }
+        .chapter-list li { margin-bottom: 4px; }
+        .chapter-list a {
+            display: block;
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .chapter-list a:hover, .chapter-list a.active {
+            background: #2a2010;
+            color: #d4a017;
+        }
+        .no-chapters { color: #444; font-size: 0.85rem; text-align: center; padding: 12px 0; }
+
+        /* Основной контент */
+        .main { flex: 1; max-width: 720px; }
+
+        .book-header {
+            background: rgba(30, 25, 20, 0.95);
+            border: 1px solid #b8960c44;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+        .book-cover-big {
+            width: 100px;
+            height: 140px;
+            background: linear-gradient(135deg, #2d2418, #1a1612);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            flex-shrink: 0;
+        }
+        .book-meta { flex: 1; }
+        .book-meta h1 { font-size: 1.5rem; color: #fff; margin-bottom: 6px; }
+        .book-meta .author { color: #d4a017; font-size: 0.9rem; margin-bottom: 8px; }
+        .book-meta .genre {
+            display: inline-block;
+            background: #2a2010;
+            color: #d4a017;
+            font-size: 0.75rem;
+            padding: 3px 10px;
+            border-radius: 20px;
+            border: 1px solid #b8960c44;
+            margin-bottom: 12px;
+        }
+        .book-meta .description { color: #888; font-size: 0.88rem; line-height: 1.6; margin-bottom: 16px; }
+        .book-meta-stats { display: flex; gap: 20px; }
+        .stat { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #666; }
+        .like-btn {
+            background: transparent;
+            border: 1px solid #555;
+            color: #aaa;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .like-btn:hover { border-color: #e05555; color: #e05555; }
+
+        /* Чтение главы */
+        .chapter-content {
+            background: rgba(30, 25, 20, 0.95);
+            border: 1px solid #b8960c44;
+            border-radius: 16px;
+            padding: 40px;
+        }
+        .chapter-content h2 { color: #d4a017; font-size: 1.2rem; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #2a2420; }
+        .chapter-text {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: #ddd;
+            white-space: pre-wrap;
+        }
+        .no-content { color: #444; text-align: center; padding: 40px; }
+
+        .back-link { color: #d4a017; text-decoration: none; font-size: 0.88rem; display: inline-block; margin-bottom: 20px; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">📖 Read Gold</div>
+        <div class="nav-links">
+            <span style="color:#666; font-size:0.85rem;">{{ current_user.username }}</span>
+            <a href="/profile">Профиль</a>
+            <a href="/logout" class="logout">Выйти</a>
+        </div>
+    </nav>
+
+    <div class="page">
+
+        <!-- Список глав -->
+        <div class="sidebar">
+            <div class="sidebar-card">
+                <h3>📑 Главы</h3>
+                {% if book.chapters %}
+                <ul class="chapter-list">
+                    {% for ch in book.chapters %}
+                    <li>
+                        <a href="/book/{{ book.id }}?chapter={{ ch.id }}"
+                           class="{{ 'active' if current_chapter and current_chapter.id == ch.id }}">
+                            {{ ch.number }}. {{ ch.title }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="no-chapters">Глав пока нет</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Контент -->
+        <div class="main">
+            <a href="/dashboard" class="back-link">← Вернуться в библиотеку</a>
+
+            <!-- Шапка книги -->
+            <div class="book-header">
+                <div class="book-cover-big">📚</div>
+                <div class="book-meta">
+                    <h1>{{ book.title }}</h1>
+                    <div class="author">✍️ {{ book.author.username }}</div>
+                    {% if book.genre %}<span class="genre">{{ book.genre }}</span>{% endif %}
+                    <div class="description">{{ book.description or 'Описание отсутствует' }}</div>
+                    <div class="book-meta-stats">
+                        <div class="stat">👁 {{ book.views }} просмотров</div>
+                        <div class="stat">❤️ {{ book.likes }} лайков</div>
+                        <a href="/like/{{ book.id }}" class="like-btn">❤️ Нравится</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Текст главы -->
+            <div class="chapter-content">
+                {% if current_chapter %}
+                    <h2>Глава {{ current_chapter.number }}: {{ current_chapter.title }}</h2>
+                    <div class="chapter-text">{{ current_chapter.content }}</div>
+                {% elif book.chapters %}
+                    <div class="no-content">Выбери главу слева 👈</div>
+                {% else %}
+                    <div class="no-content">Автор ещё не добавил главы</div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

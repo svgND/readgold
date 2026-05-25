@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Gold — Профиль</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #0d0d0d;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: rgba(20, 16, 10, 0.95);
+            border-bottom: 1px solid #b8960c44;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { color: #d4a017; font-size: 1.4rem; font-weight: bold; }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a { color: #aaa; text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: #d4a017; }
+        .logout {
+            background: transparent;
+            border: 1px solid #d4a017;
+            color: #d4a017;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+        .logout:hover { background: #d4a017; color: #000; }
+
+        .container { padding: 40px; max-width: 900px; margin: 0 auto; }
+
+        /* Шапка профиля */
+        .profile-header {
+            background: rgba(30, 25, 20, 0.95);
+            border: 1px solid #b8960c44;
+            border-radius: 16px;
+            padding: 32px;
+            display: flex;
+            gap: 28px;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4a017, #8b6914);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            flex-shrink: 0;
+            border: 3px solid #d4a01744;
+        }
+
+        .profile-info { flex: 1; }
+        .profile-name { font-size: 1.5rem; font-weight: bold; margin-bottom: 4px; }
+        .profile-role {
+            display: inline-block;
+            background: #2a2010;
+            color: #d4a017;
+            font-size: 0.75rem;
+            padding: 3px 12px;
+            border-radius: 20px;
+            border: 1px solid #b8960c44;
+            margin-bottom: 12px;
+        }
+        .profile-bio { color: #888; font-size: 0.9rem; margin-bottom: 16px; }
+
+        .edit-bio-form { display: flex; gap: 10px; }
+        .edit-bio-form input {
+            flex: 1;
+            padding: 8px 14px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+        }
+        .edit-bio-form input:focus { border-color: #d4a017; }
+        .edit-bio-form button {
+            padding: 8px 16px;
+            background: #d4a017;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        /* Статистика */
+        .stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: rgba(30, 25, 20, 0.95);
+            border: 1px solid #b8960c44;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-number { font-size: 2rem; font-weight: bold; color: #d4a017; }
+        .stat-label { font-size: 0.8rem; color: #666; margin-top: 4px; }
+
+        /* Стена */
+        .card {
+            background: rgba(30, 25, 20, 0.95);
+            border: 1px solid #b8960c44;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+        .card h3 { color: #d4a017; margin-bottom: 20px; }
+
+        .post-form textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.9rem;
+            outline: none;
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+            margin-bottom: 12px;
+        }
+        .post-form textarea:focus { border-color: #d4a017; }
+        .post-form button {
+            padding: 10px 24px;
+            background: #d4a017;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .post-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #2a2420;
+        }
+        .post-item:last-child { border-bottom: none; }
+        .post-content { font-size: 0.9rem; line-height: 1.6; color: #ddd; }
+        .post-date { font-size: 0.75rem; color: #555; margin-top: 6px; }
+
+        .empty { color: #444; text-align: center; padding: 20px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">📖 Read Gold</div>
+        <div class="nav-links">
+            <a href="/dashboard">Библиотека</a>
+            <a href="/profile">Профиль</a>
+            <a href="/logout" class="logout">Выйти</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- Шапка профиля -->
+        <div class="profile-header">
+            <div class="avatar">
+                {{ current_user.username[0].upper() }}
+            </div>
+            <div class="profile-info">
+                <div class="profile-name">{{ current_user.username }}</div>
+                <div class="profile-role">
+                    {% if current_user.role == 'author' %}✍️ Автор{% else %}📖 Читатель{% endif %}
+                </div>
+                <div class="profile-bio">
+                    {{ current_user.bio or 'Расскажи о себе...' }}
+                </div>
+                <form method="POST" action="/update-bio" class="edit-bio-form">
+                    <input type="text" name="bio" placeholder="Обнови описание профиля">
+                    <button type="submit">Сохранить</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">{{ posts|length }}</div>
+                <div class="stat-label">Записей на стене</div>
+            </div>
+            {% if current_user.role == 'author' %}
+            <div class="stat-card">
+                <div class="stat-number">{{ books|length }}</div>
+                <div class="stat-label">Книг опубликовано</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_likes }}</div>
+                <div class="stat-label">Лайков всего</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_views }}</div>
+                <div class="stat-label">Просмотров всего</div>
+            </div>
+            {% else %}
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Прочитано книг</div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Стена -->
+        <div class="card">
+            <h3>📌 Моя стена</h3>
+            <form method="POST" action="/add-post" class="post-form">
+                <textarea name="content" placeholder="{% if current_user.role == 'author' %}Анонс новой главы, новость для читателей...{% else %}Напиши рецензию или впечатление от книги...{% endif %}" required></textarea>
+                <button type="submit">Опубликовать</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>📝 Записи</h3>
+            {% if posts %}
+                {% for post in posts %}
+                <div class="post-item">
+                    <div class="post-content">{{ post.content }}</div>
+                    <div class="post-date">{{ post.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty">Записей пока нет</div>
+            {% endif %}
+        </div>
+
+    </div>
+
+</body>
+</html>

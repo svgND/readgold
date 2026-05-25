@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Gold — Библиотека</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #0d0d0d;
+            font-family: 'Segoe UI', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+        }
+        nav {
+            background: rgba(20, 16, 10, 0.95);
+            border-bottom: 1px solid #b8960c44;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { color: #d4a017; font-size: 1.4rem; font-weight: bold; }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a { color: #aaa; text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+        .nav-links a:hover { color: #d4a017; }
+        .logout {
+            background: transparent;
+            border: 1px solid #d4a017;
+            color: #d4a017;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+        .logout:hover { background: #d4a017; color: #000; }
+
+        .page { display: flex; max-width: 1300px; margin: 0 auto; padding: 40px 24px; gap: 32px; }
+
+        .sidebar { width: 220px; flex-shrink: 0; }
+        .sidebar h3 { color: #d4a017; font-size: 0.95rem; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+        .genre-list { list-style: none; }
+        .genre-list li { margin-bottom: 6px; }
+        .genre-list a {
+            display: block;
+            padding: 8px 14px;
+            border-radius: 8px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .genre-list a:hover, .genre-list a.active {
+            background: #2a2010;
+            color: #d4a017;
+            border-color: #b8960c44;
+        }
+
+        .main { flex: 1; }
+        h2 { color: #d4a017; font-size: 1.6rem; margin-bottom: 8px; }
+        .subtitle { color: #666; margin-bottom: 28px; font-size: 0.9rem; }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+        .book-card {
+            background: #1a1612;
+            border: 1px solid #2a2420;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .book-card:hover { transform: translateY(-5px); border-color: #d4a017; }
+        .book-cover {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #1a1612, #2d2418);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            text-decoration: none;
+        }
+        .book-info { padding: 12px; }
+        .book-title { font-size: 0.9rem; font-weight: bold; margin-bottom: 4px; }
+        .book-author { font-size: 0.78rem; color: #888; margin-bottom: 8px; }
+        .book-genre {
+            display: inline-block;
+            background: #2a2010;
+            color: #d4a017;
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            border: 1px solid #b8960c44;
+            margin-bottom: 8px;
+        }
+        .book-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+        }
+        .book-stats { display: flex; gap: 10px; font-size: 0.78rem; color: #555; }
+        .like-btn {
+            background: transparent;
+            border: 1px solid #333;
+            color: #aaa;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .like-btn:hover { border-color: #e05555; color: #e05555; }
+        .read-btn {
+            display: block;
+            text-align: center;
+            margin-top: 8px;
+            padding: 6px;
+            background: #d4a017;
+            color: #000;
+            font-weight: bold;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .read-btn:hover { background: #e6b520; }
+        .empty { text-align: center; padding: 80px 20px; color: #444; }
+        .empty .icon { font-size: 4rem; margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">📖 Read Gold</div>
+        <div class="nav-links">
+            <span style="color:#666; font-size:0.85rem;">{{ current_user.username }}</span>
+            <a href="/profile">Профиль</a>
+            {% if current_user.role == 'author' %}
+            <a href="/author">Кабинет автора</a>
+            {% endif %}
+            <a href="/logout" class="logout">Выйти</a>
+        </div>
+    </nav>
+
+    <div class="page">
+        <div class="sidebar">
+            <h3>📚 Жанры</h3>
+            <ul class="genre-list">
+                <li><a href="/dashboard" class="{{ 'active' if not selected_genre }}">Все книги</a></li>
+                <li><a href="/dashboard?genre=Роман" class="{{ 'active' if selected_genre == 'Роман' }}">📖 Роман</a></li>
+                <li><a href="/dashboard?genre=Фэнтези" class="{{ 'active' if selected_genre == 'Фэнтези' }}">🧙 Фэнтези</a></li>
+                <li><a href="/dashboard?genre=Романтика" class="{{ 'active' if selected_genre == 'Романтика' }}">💕 Романтика</a></li>
+                <li><a href="/dashboard?genre=Детектив" class="{{ 'active' if selected_genre == 'Детектив' }}">🔍 Детектив</a></li>
+                <li><a href="/dashboard?genre=Фантастика" class="{{ 'active' if selected_genre == 'Фантастика' }}">🚀 Фантастика</a></li>
+                <li><a href="/dashboard?genre=Ужасы" class="{{ 'active' if selected_genre == 'Ужасы' }}">👻 Ужасы</a></li>
+                <li><a href="/dashboard?genre=Приключения" class="{{ 'active' if selected_genre == 'Приключения' }}">🗺️ Приключения</a></li>
+                <li><a href="/dashboard?genre=Проза" class="{{ 'active' if selected_genre == 'Проза' }}">✍️ Проза</a></li>
+                <li><a href="/dashboard?genre=Фанфик" class="{{ 'active' if selected_genre == 'Фанфик' }}">⭐ Фанфик</a></li>
+            </ul>
+        </div>
+
+        <div class="main">
+            <h2>Библиотека</h2>
+            <p class="subtitle">
+                {% if selected_genre %}Жанр: {{ selected_genre }}{% else %}Все доступные книги{% endif %}
+            </p>
+
+            {% if books %}
+            <div class="books-grid">
+                {% for book in books %}
+                <div class="book-card">
+                    <a href="/book/{{ book.id }}" class="book-cover">📚</a>
+                    <div class="book-info">
+                        <div class="book-title">{{ book.title }}</div>
+                        <div class="book-author">{{ book.author.username }}</div>
+                        {% if book.genre %}
+                        <span class="book-genre">{{ book.genre }}</span>
+                        {% endif %}
+                        <div class="book-actions">
+                            <div class="book-stats">
+                                <span>👁 {{ book.views }}</span>
+                                <span>❤️ {{ book.likes }}</span>
+                            </div>
+                            <a href="/like/{{ book.id }}" class="like-btn">❤️</a>
+                        </div>
+                        <a href="/book/{{ book.id }}" class="read-btn">Читать</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty">
+                <div class="icon">📭</div>
+                <p>Книг в этом жанре пока нет</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>
