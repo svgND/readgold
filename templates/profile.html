@@ -190,6 +190,19 @@
                 </div>
                 <div class="profile-bio">
                     {{ current_user.bio or 'Расскажи о себе...' }}
+                    {% if current_user.role == 'reader' %}
+<form method="POST" action="/set-role/author" style="margin-top: 16px;">
+    <button type="submit" style="padding:8px 20px; background:transparent; border:1px solid #d4a017; color:#d4a017; border-radius:8px; cursor:pointer; font-size:0.85rem;">
+        ✍️ Стать автором
+    </button>
+</form>
+{% else %}
+<form method="POST" action="/set-role/reader" style="margin-top: 16px;">
+    <button type="submit" style="padding:8px 20px; background:transparent; border:1px solid #888; color:#888; border-radius:8px; cursor:pointer; font-size:0.85rem;">
+        📖 Стать читателем
+    </button>
+</form>
+{% endif %}
                 </div>
                 <form method="POST" action="/update-bio" class="edit-bio-form">
                     <input type="text" name="bio" placeholder="Обнови описание профиля">

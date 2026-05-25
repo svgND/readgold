@@ -51,13 +51,13 @@ def register():
 def choose_role():
     return render_template('choose_role.html')
 
-@app.route('/set-role/<role>')
+@app.route('/set-role/<role>', methods=['GET', 'POST'])
 @login_required
 def set_role(role):
     if role in ['reader', 'author']:
         current_user.role = role
         db.session.commit()
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('profile'))
 
 @app.route('/dashboard')
 @login_required
