@@ -42,7 +42,8 @@ def register():
         user = User(username=username, email=email, password=password)
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for('login'))
+        login_user(user)
+        return redirect(url_for('choose_role'))
     return render_template('register.html')
 
 @app.route('/choose-role')
@@ -117,13 +118,23 @@ def book(book_id):
     book = Book.query.get_or_404(book_id)
     book.views += 1
     db.session.commit()
-    chapter_id = request.args.get('chapter', type=int)
-    current_chapter = None
-    if chapter_id:
-        current_chapter = Chapter.query.get(chapter_id)
-    elif book.chapters:
-        current_chapter = book.chapters[0]
+    return render_template('book.html', book=book, current_chapter=None)
+
+@app.route('/book/<int:book_id>/chapter/<int:chapter_id>')
+@login_required
+def read_chapter(book_id, chapter_id):
+    book = Book.query.get_or_404(book_id)
+    current_chapter = Chapter.query.get_or_404(chapter_id)
     return render_template('book.html', book=book, current_chapter=current_chapter)
+
+@app.route('/comment/<int:book_id>', methods=['POST'])
+@login_required
+def add_comment(book_id):
+    content = request.form['content']
+    comment = Comment(content=content, user_id=current_user.id, book_id=book_id)
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for('book', book_id=book_id))
 
 @app.route('/like/<int:book_id>')
 @login_required

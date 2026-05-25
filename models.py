@@ -25,6 +25,7 @@ class Book(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     liked_by = db.relationship('Like', backref='book', lazy=True)
     chapters = db.relationship('Chapter', backref='book', lazy=True, order_by='Chapter.number')
+    comments = db.relationship('Comment', backref='book', lazy=True)
 
 class Chapter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -37,6 +38,14 @@ class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
+    user = db.relationship('User', backref='comments')
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
