@@ -180,6 +180,16 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+@app.route('/search')
+@login_required
+def search():
+    query = request.args.get('q', '')
+    if query:
+        books = Book.query.filter(Book.title.ilike(f'%{query}%')).all()
+    else:
+        books = []
+    return render_template('books.html', books=books, selected_genre=None, search_query=query)
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

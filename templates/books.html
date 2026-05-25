@@ -147,6 +147,28 @@
             <a href="/logout" class="logout">Выйти</a>
         </div>
     </nav>
+    <nav>
+    <div class="logo">📖 Read Gold</div>
+    <form method="GET" action="/search" style="display:flex; align-items:center; gap:8px;">
+        <input type="text" name="q" placeholder="Поиск книг..."
+               value="{{ search_query or '' }}"
+               style="padding:8px 14px; background:#1a1a1a; border:1px solid #333;
+                      border-radius:8px; color:#fff; outline:none; font-size:0.88rem; width:220px;">
+        <button type="submit"
+                style="padding:8px 16px; background:#d4a017; color:#000;
+                       border:none; border-radius:8px; cursor:pointer; font-weight:bold;">
+            🔍
+        </button>
+    </form>
+    <div class="nav-links">
+        <span style="color:#666; font-size:0.85rem;">{{ current_user.username }}</span>
+        <a href="/profile">Профиль</a>
+        {% if current_user.role == 'author' %}
+        <a href="/author">Кабинет автора</a>
+        {% endif %}
+        <a href="/logout" class="logout">Выйти</a>
+    </div>
+</nav>
 
     <div class="page">
         <div class="sidebar">
